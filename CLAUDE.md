@@ -318,3 +318,23 @@ Was folgt daraus (positiv und negativ)?
 | `mkg-product-backend` | Product Domain Backend |
 | `mkg-product-frontend` | Product Domain Frontend |
 | ... | (analog für andere Domains) |
+
+---
+
+## AWS Account Details
+
+**Management Account:**
+- Account ID: `590042305656`
+- Account Name: `mkg-management`
+
+**AWS Access Portal URL:**
+- `https://d-996743e9a4.awsapps.com/start`
+
+**Terraform State Backend:**
+- S3 Bucket: `mkg-terraform-state-590042305656`
+- DynamoDB Table: `mkg-terraform-locks`
+- Region: `eu-central-1`
+
+**GitHub Organization:**
+- Organization: `mkg-machines`
+- URL: `https://github.com/mkg-machines`
