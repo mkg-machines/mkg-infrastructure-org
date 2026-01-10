@@ -1,0 +1,104 @@
+{
+  "groups": [
+    {
+      "name": "Admins",
+      "description": "Platform administrators with full access",
+      "permission_sets": ["AdminAccess"]
+    },
+    {
+      "name": "PlatformDevelopers",
+      "description": "Platform domain development team",
+      "permission_sets": ["PlatformDeveloper"]
+    },
+    {
+      "name": "ProductDevelopers",
+      "description": "Product domain development team",
+      "permission_sets": ["ProductDeveloper"]
+    },
+    {
+      "name": "ProcurementDevelopers",
+      "description": "Procurement domain development team",
+      "permission_sets": ["ProcurementDeveloper"]
+    },
+    {
+      "name": "LogisticsDevelopers",
+      "description": "Logistics domain development team",
+      "permission_sets": ["LogisticsDeveloper"]
+    },
+    {
+      "name": "SalesDevelopers",
+      "description": "Sales domain development team",
+      "permission_sets": ["SalesDeveloper"]
+    },
+    {
+      "name": "MarketingDevelopers",
+      "description": "Marketing domain development team",
+      "permission_sets": ["MarketingDeveloper"]
+    },
+    {
+      "name": "ServiceDevelopers",
+      "description": "Service domain development team",
+      "permission_sets": ["ServiceDeveloper"]
+    },
+    {
+      "name": "AccountingDevelopers",
+      "description": "Accounting domain development team",
+      "permission_sets": ["AccountingDeveloper"]
+    },
+    {
+      "name": "ReadOnlyUsers",
+      "description": "Stakeholders and support with read-only access",
+      "permission_sets": ["ReadOnly"]
+    },
+    {
+      "name": "Deployers",
+      "description": "CI/CD service accounts",
+      "permission_sets": ["Deployer"]
+    }
+  ],
+  "users": [
+    {
+      "user_name": "platform.team-lead",
+      "display_name": "Platform Team Lead",
+      "email": "platform.team-lead@mkg-machines.com",
+      "given_name": "Platform",
+      "family_name": "Team Lead",
+      "department": "IT",
+      "title": "Platform Team Leader - Administrator",
+      "manager": "ural.genc@mkg-machines.com",
+      "phone": null,
+      "locale": "de-DE",
+      "timezone": "Europe/Berlin",
+      "groups": ["Admins"],
+      "tags": {
+        "Project": "mkg-machines",
+        "Domain": "Platform",
+        "Role": "Admin",
+        "CostCenter": "IT-52001"
+      }
+    }
+  ],
+  "_schema": {
+    "description": "Schema documentation for users.json",
+    "user_fields": {
+      "user_name": "Unique username (required)",
+      "display_name": "Full display name (required)",
+      "email": "Email address (required, must be unique)",
+      "given_name": "First name (required)",
+      "family_name": "Last name (required)",
+      "department": "Department name (optional)",
+      "title": "Job title (optional)",
+      "manager": "Manager's email address (optional)",
+      "phone": "Phone number (optional)",
+      "locale": "Locale code, e.g., de-DE (optional)",
+      "timezone": "Timezone, e.g., Europe/Berlin (optional)",
+      "groups": "Array of group names (required)",
+      "tags": "Key-value pairs for metadata (optional)"
+    },
+    "group_fields": {
+      "name": "Unique group name (required)",
+      "description": "Group description (required)",
+      "permission_sets": "Array of permission set names to assign (required)"
+    }
+  }
+}
