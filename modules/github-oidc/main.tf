@@ -58,7 +58,7 @@ locals {
   # Build subject conditions
   subject_conditions = var.allowed_repos[0] == "*" ? [
     "repo:${var.github_org}/*"
-  ] : [
+    ] : [
     for repo in var.allowed_repos : "repo:${var.github_org}/${repo}:*"
   ]
 }

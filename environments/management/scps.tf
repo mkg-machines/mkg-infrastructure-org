@@ -12,8 +12,8 @@ resource "aws_organizations_policy" "region_restriction" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid       = "DenyAllOutsideEUCentral1"
-        Effect    = "Deny"
+        Sid    = "DenyAllOutsideEUCentral1"
+        Effect = "Deny"
         NotAction = [
           "a4b:*",
           "acm:*",
@@ -80,10 +80,10 @@ resource "aws_organizations_policy" "deny_root_user" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid       = "DenyRootUserActions"
-        Effect    = "Deny"
-        Action    = "*"
-        Resource  = "*"
+        Sid      = "DenyRootUserActions"
+        Effect   = "Deny"
+        Action   = "*"
+        Resource = "*"
         Condition = {
           StringLike = {
             "aws:PrincipalArn" = "arn:aws:iam::*:root"

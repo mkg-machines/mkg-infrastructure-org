@@ -8,10 +8,10 @@ locals {
   domain_developer_assignments = flatten([
     for domain in local.domains : [
       for env in local.environments : {
-        key             = "${domain}-${env}-developer"
-        group_name      = "${title(domain)}Developers"
-        account_name    = "mkg-${domain}-${env}"
-        permission_set  = env == "prod" ? "ReadOnly" : local.domain_permission_set_map[domain]
+        key            = "${domain}-${env}-developer"
+        group_name     = "${title(domain)}Developers"
+        account_name   = "mkg-${domain}-${env}"
+        permission_set = env == "prod" ? "ReadOnly" : local.domain_permission_set_map[domain]
       }
     ]
   ])
