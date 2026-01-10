@@ -24,7 +24,7 @@ permissions:
 
 env:
   AWS_REGION: eu-central-1
-  TERRAFORM_VERSION: 1.6.0
+  TERRAFORM_VERSION: 1.11.1
   WORKING_DIRECTORY: environments/management
 
 jobs:
