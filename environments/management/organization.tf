@@ -23,18 +23,18 @@ resource "aws_organizations_organization" "this" {
 # Organizational Units
 # -----------------------------------------------------------------------------
 
-# Parent OU for all domain accounts
-resource "aws_organizations_organizational_unit" "domains" {
-  name      = "Domains"
+# Parent OU for all workload accounts
+resource "aws_organizations_organizational_unit" "workloads" {
+  name      = "Workloads"
   parent_id = aws_organizations_organization.this.roots[0].id
 }
 
-# Domain OUs (Platform, Product, etc.)
-resource "aws_organizations_organizational_unit" "domain" {
-  for_each = local.domains
+# Layer OUs (Backend, Frontend)
+resource "aws_organizations_organizational_unit" "layer" {
+  for_each = local.layers
 
   name      = title(each.value)
-  parent_id = aws_organizations_organizational_unit.domains.id
+  parent_id = aws_organizations_organizational_unit.workloads.id
 }
 
 # Suspended OU for deactivated accounts

@@ -1,147 +1,39 @@
 {
   "accounts": [
     {
-      "name": "mkg-platform-dev",
-      "email": "aws-platform-dev@mkg-machines.com",
-      "domain": "platform",
+      "name": "mkg-backend-dev",
+      "email": "aws-backend-dev@mkg-machines.com",
+      "layer": "backend",
       "environment": "dev"
     },
     {
-      "name": "mkg-platform-stage",
-      "email": "aws-platform-stage@mkg-machines.com",
-      "domain": "platform",
+      "name": "mkg-backend-stage",
+      "email": "aws-backend-stage@mkg-machines.com",
+      "layer": "backend",
       "environment": "stage"
     },
     {
-      "name": "mkg-platform-prod",
-      "email": "aws-platform-prod@mkg-machines.com",
-      "domain": "platform",
+      "name": "mkg-backend-prod",
+      "email": "aws-backend-prod@mkg-machines.com",
+      "layer": "backend",
       "environment": "prod"
     },
     {
-      "name": "mkg-product-dev",
-      "email": "aws-product-dev@mkg-machines.com",
-      "domain": "product",
+      "name": "mkg-frontend-dev",
+      "email": "aws-frontend-dev@mkg-machines.com",
+      "layer": "frontend",
       "environment": "dev"
     },
     {
-      "name": "mkg-product-stage",
-      "email": "aws-product-stage@mkg-machines.com",
-      "domain": "product",
+      "name": "mkg-frontend-stage",
+      "email": "aws-frontend-stage@mkg-machines.com",
+      "layer": "frontend",
       "environment": "stage"
     },
     {
-      "name": "mkg-product-prod",
-      "email": "aws-product-prod@mkg-machines.com",
-      "domain": "product",
-      "environment": "prod"
-    },
-    {
-      "name": "mkg-procurement-dev",
-      "email": "aws-procurement-dev@mkg-machines.com",
-      "domain": "procurement",
-      "environment": "dev"
-    },
-    {
-      "name": "mkg-procurement-stage",
-      "email": "aws-procurement-stage@mkg-machines.com",
-      "domain": "procurement",
-      "environment": "stage"
-    },
-    {
-      "name": "mkg-procurement-prod",
-      "email": "aws-procurement-prod@mkg-machines.com",
-      "domain": "procurement",
-      "environment": "prod"
-    },
-    {
-      "name": "mkg-logistics-dev",
-      "email": "aws-logistics-dev@mkg-machines.com",
-      "domain": "logistics",
-      "environment": "dev"
-    },
-    {
-      "name": "mkg-logistics-stage",
-      "email": "aws-logistics-stage@mkg-machines.com",
-      "domain": "logistics",
-      "environment": "stage"
-    },
-    {
-      "name": "mkg-logistics-prod",
-      "email": "aws-logistics-prod@mkg-machines.com",
-      "domain": "logistics",
-      "environment": "prod"
-    },
-    {
-      "name": "mkg-sales-dev",
-      "email": "aws-sales-dev@mkg-machines.com",
-      "domain": "sales",
-      "environment": "dev"
-    },
-    {
-      "name": "mkg-sales-stage",
-      "email": "aws-sales-stage@mkg-machines.com",
-      "domain": "sales",
-      "environment": "stage"
-    },
-    {
-      "name": "mkg-sales-prod",
-      "email": "aws-sales-prod@mkg-machines.com",
-      "domain": "sales",
-      "environment": "prod"
-    },
-    {
-      "name": "mkg-marketing-dev",
-      "email": "aws-marketing-dev@mkg-machines.com",
-      "domain": "marketing",
-      "environment": "dev"
-    },
-    {
-      "name": "mkg-marketing-stage",
-      "email": "aws-marketing-stage@mkg-machines.com",
-      "domain": "marketing",
-      "environment": "stage"
-    },
-    {
-      "name": "mkg-marketing-prod",
-      "email": "aws-marketing-prod@mkg-machines.com",
-      "domain": "marketing",
-      "environment": "prod"
-    },
-    {
-      "name": "mkg-service-dev",
-      "email": "aws-service-dev@mkg-machines.com",
-      "domain": "service",
-      "environment": "dev"
-    },
-    {
-      "name": "mkg-service-stage",
-      "email": "aws-service-stage@mkg-machines.com",
-      "domain": "service",
-      "environment": "stage"
-    },
-    {
-      "name": "mkg-service-prod",
-      "email": "aws-service-prod@mkg-machines.com",
-      "domain": "service",
-      "environment": "prod"
-    },
-    {
-      "name": "mkg-accounting-dev",
-      "email": "aws-accounting-dev@mkg-machines.com",
-      "domain": "accounting",
-      "environment": "dev"
-    },
-    {
-      "name": "mkg-accounting-stage",
-      "email": "aws-accounting-stage@mkg-machines.com",
-      "domain": "accounting",
-      "environment": "stage"
-    },
-    {
-      "name": "mkg-accounting-prod",
-      "email": "aws-accounting-prod@mkg-machines.com",
-      "domain": "accounting",
+      "name": "mkg-frontend-prod",
+      "email": "aws-frontend-prod@mkg-machines.com",
+      "layer": "frontend",
       "environment": "prod"
     }
   ]

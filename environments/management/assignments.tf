@@ -3,21 +3,21 @@
 # -----------------------------------------------------------------------------
 
 locals {
-  # Build assignment map for domain developers
+  # Build assignment map for layer developers
   # Full access to dev/stage, ReadOnly to prod
-  domain_developer_assignments = flatten([
-    for domain in local.domains : [
+  layer_developer_assignments = flatten([
+    for layer in local.layers : [
       for env in local.environments : {
-        key            = "${domain}-${env}-developer"
-        group_name     = "${title(domain)}Developers"
-        account_name   = "mkg-${domain}-${env}"
-        permission_set = env == "prod" ? "ReadOnly" : local.domain_permission_set_map[domain]
+        key            = "${layer}-${env}-developer"
+        group_name     = "${title(layer)}Developers"
+        account_name   = "mkg-${layer}-${env}"
+        permission_set = env == "prod" ? "ReadOnly" : local.layer_permission_set_map[layer]
       }
     ]
   ])
 
-  domain_developer_assignment_map = {
-    for assignment in local.domain_developer_assignments :
+  layer_developer_assignment_map = {
+    for assignment in local.layer_developer_assignments :
     assignment.key => assignment
   }
 
@@ -53,7 +53,7 @@ locals {
 
   # Combine all assignments
   all_assignments = merge(
-    local.domain_developer_assignment_map,
+    local.layer_developer_assignment_map,
     local.admin_assignments,
     local.readonly_assignments,
     local.deployer_assignments

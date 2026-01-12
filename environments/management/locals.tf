@@ -3,8 +3,8 @@ locals {
   accounts_config = jsondecode(file("${path.module}/../../data/accounts.json"))
   users_config    = jsondecode(file("${path.module}/../../data/users.json"))
 
-  # Extract domains from accounts
-  domains = toset([for account in local.accounts_config.accounts : account.domain])
+  # Extract layers from accounts
+  layers = toset([for account in local.accounts_config.accounts : account.layer])
 
   # Environments
   environments = toset(["dev", "stage", "prod"])
@@ -34,43 +34,13 @@ locals {
       managed_policy_arns = ["arn:aws:iam::aws:policy/AdministratorAccess"]
       inline_policy       = null
     }
-    PlatformDeveloper = {
-      description         = "Platform domain developer access"
+    BackendDeveloper = {
+      description         = "Backend developer access"
       managed_policy_arns = ["arn:aws:iam::aws:policy/PowerUserAccess"]
       inline_policy       = null
     }
-    ProductDeveloper = {
-      description         = "Product domain developer access"
-      managed_policy_arns = ["arn:aws:iam::aws:policy/PowerUserAccess"]
-      inline_policy       = null
-    }
-    ProcurementDeveloper = {
-      description         = "Procurement domain developer access"
-      managed_policy_arns = ["arn:aws:iam::aws:policy/PowerUserAccess"]
-      inline_policy       = null
-    }
-    LogisticsDeveloper = {
-      description         = "Logistics domain developer access"
-      managed_policy_arns = ["arn:aws:iam::aws:policy/PowerUserAccess"]
-      inline_policy       = null
-    }
-    SalesDeveloper = {
-      description         = "Sales domain developer access"
-      managed_policy_arns = ["arn:aws:iam::aws:policy/PowerUserAccess"]
-      inline_policy       = null
-    }
-    MarketingDeveloper = {
-      description         = "Marketing domain developer access"
-      managed_policy_arns = ["arn:aws:iam::aws:policy/PowerUserAccess"]
-      inline_policy       = null
-    }
-    ServiceDeveloper = {
-      description         = "Service domain developer access"
-      managed_policy_arns = ["arn:aws:iam::aws:policy/PowerUserAccess"]
-      inline_policy       = null
-    }
-    AccountingDeveloper = {
-      description         = "Accounting domain developer access"
+    FrontendDeveloper = {
+      description         = "Frontend developer access"
       managed_policy_arns = ["arn:aws:iam::aws:policy/PowerUserAccess"]
       inline_policy       = null
     }
@@ -86,16 +56,10 @@ locals {
     }
   }
 
-  # Domain to permission set mapping
-  domain_permission_set_map = {
-    platform    = "PlatformDeveloper"
-    product     = "ProductDeveloper"
-    procurement = "ProcurementDeveloper"
-    logistics   = "LogisticsDeveloper"
-    sales       = "SalesDeveloper"
-    marketing   = "MarketingDeveloper"
-    service     = "ServiceDeveloper"
-    accounting  = "AccountingDeveloper"
+  # Layer to permission set mapping
+  layer_permission_set_map = {
+    backend  = "BackendDeveloper"
+    frontend = "FrontendDeveloper"
   }
 
   # Common tags

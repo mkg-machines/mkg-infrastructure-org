@@ -12,16 +12,16 @@ output "organization_root_id" {
   value       = aws_organizations_organization.this.roots[0].id
 }
 
-output "domains_ou_id" {
-  description = "Domains OU ID"
-  value       = aws_organizations_organizational_unit.domains.id
+output "workloads_ou_id" {
+  description = "Workloads OU ID"
+  value       = aws_organizations_organizational_unit.workloads.id
 }
 
-output "domain_ou_ids" {
-  description = "Domain OU IDs"
+output "layer_ou_ids" {
+  description = "Layer OU IDs (Backend, Frontend)"
   value = {
-    for domain, ou in aws_organizations_organizational_unit.domain :
-    domain => ou.id
+    for layer, ou in aws_organizations_organizational_unit.layer :
+    layer => ou.id
   }
 }
 

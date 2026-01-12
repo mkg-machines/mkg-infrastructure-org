@@ -6,44 +6,14 @@
       "permission_sets": ["AdminAccess"]
     },
     {
-      "name": "PlatformDevelopers",
-      "description": "Platform domain development team",
-      "permission_sets": ["PlatformDeveloper"]
+      "name": "BackendDevelopers",
+      "description": "Backend development team",
+      "permission_sets": ["BackendDeveloper"]
     },
     {
-      "name": "ProductDevelopers",
-      "description": "Product domain development team",
-      "permission_sets": ["ProductDeveloper"]
-    },
-    {
-      "name": "ProcurementDevelopers",
-      "description": "Procurement domain development team",
-      "permission_sets": ["ProcurementDeveloper"]
-    },
-    {
-      "name": "LogisticsDevelopers",
-      "description": "Logistics domain development team",
-      "permission_sets": ["LogisticsDeveloper"]
-    },
-    {
-      "name": "SalesDevelopers",
-      "description": "Sales domain development team",
-      "permission_sets": ["SalesDeveloper"]
-    },
-    {
-      "name": "MarketingDevelopers",
-      "description": "Marketing domain development team",
-      "permission_sets": ["MarketingDeveloper"]
-    },
-    {
-      "name": "ServiceDevelopers",
-      "description": "Service domain development team",
-      "permission_sets": ["ServiceDeveloper"]
-    },
-    {
-      "name": "AccountingDevelopers",
-      "description": "Accounting domain development team",
-      "permission_sets": ["AccountingDeveloper"]
+      "name": "FrontendDevelopers",
+      "description": "Frontend development team",
+      "permission_sets": ["FrontendDeveloper"]
     },
     {
       "name": "ReadOnlyUsers",
@@ -72,7 +42,6 @@
       "groups": ["Admins"],
       "tags": {
         "Project": "mkg-machines",
-        "Domain": "Platform",
         "Role": "Admin",
         "CostCenter": "IT-52001"
       }

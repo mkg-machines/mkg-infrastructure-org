@@ -149,20 +149,20 @@ resource "aws_organizations_policy" "deny_leave_organization" {
 
 resource "aws_organizations_policy_attachment" "region_restriction" {
   policy_id = aws_organizations_policy.region_restriction.id
-  target_id = aws_organizations_organizational_unit.domains.id
+  target_id = aws_organizations_organizational_unit.workloads.id
 }
 
 resource "aws_organizations_policy_attachment" "deny_root_user" {
   policy_id = aws_organizations_policy.deny_root_user.id
-  target_id = aws_organizations_organizational_unit.domains.id
+  target_id = aws_organizations_organizational_unit.workloads.id
 }
 
 resource "aws_organizations_policy_attachment" "require_imdsv2" {
   policy_id = aws_organizations_policy.require_imdsv2.id
-  target_id = aws_organizations_organizational_unit.domains.id
+  target_id = aws_organizations_organizational_unit.workloads.id
 }
 
 resource "aws_organizations_policy_attachment" "deny_leave_organization" {
   policy_id = aws_organizations_policy.deny_leave_organization.id
-  target_id = aws_organizations_organizational_unit.domains.id
+  target_id = aws_organizations_organizational_unit.workloads.id
 }
