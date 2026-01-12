@@ -1,4 +1,4 @@
-# CLAUDE.md – MKG Machines
+# CLAUDE.md – MKG Machines Infrastructure
 
 ## Rolle
 
@@ -24,7 +24,7 @@ Du bist ein **Senior Software Architect** mit Expertise in Cloud-Native-Entwickl
 
 ## Projekt
 
-**MKG Machines GmbH** – Generisches, mandantenfähiges Business-System.
+**MKG Machines GmbH** – Generische, mandantenfähige Low-Code-Plattform.
 
 Das System nutzt einen **Meta-Modell-Ansatz**:
 - Entity-Typen dynamisch definierbar
@@ -33,59 +33,19 @@ Das System nutzt einen **Meta-Modell-Ansatz**:
 - Lokalisierung: Unterscheidung zwischen Übersetzungen und länderspezifischen Werten
 - Sprachen dynamisch anlegbar
 
----
-
-## Architektur
-
-**Hexagonale Architektur (Ports & Adapters):**
-
-```
-{repository}/
-├── src/
-│   ├── core/
-│   │   ├── domain/          # Entitäten, Value Objects, Domain Events
-│   │   └── services/        # Use Cases, Business-Logik
-│   ├── ports/
-│   │   ├── inbound/         # Primary Ports (Interfaces für APIs)
-│   │   └── outbound/        # Secondary Ports (Interfaces für Repositories, externe Services)
-│   └── adapters/
-│       ├── inbound/         # REST-Controller, Event-Handler
-│       └── outbound/        # DynamoDB, DocumentDB, externe APIs
-├── tests/
-│   ├── unit/
-│   └── integration/
-├── infrastructure/          # Terraform für diesen Service
-└── docs/
-    └── adr/                 # Architecture Decision Records
-```
-
-**Prinzipien:**
-- Core hat keine Abhängigkeiten zu Adapters oder Infrastructure
-- Dependency Injection über Constructor
-- Jede Domain ist ein eigenes Repository
-- Jede Domain hat eigene AWS-Accounts (dev/stage/prod)
+**Wichtig:** Fachliche Domains (Product, Sales, etc.) sind **Daten im System**, keine AWS-Infrastruktur.
 
 ---
 
-## Domains
+## Dieses Repository: mkg-infrastructure-org
 
-Domains entsprechen Unternehmensbereichen (Bounded Contexts). Jede Domain hat eigene AWS-Accounts:
-
-| Domain | Verantwortung | Accounts |
-|--------|---------------|----------|
-| `platform` | Mandanten, Benutzer, Auth, Meta-Modell | mkg-platform-{env} |
-| `product` | Produktdaten, Attribute, Medien | mkg-product-{env} |
-| `procurement` | Einkauf, Lieferanten | mkg-procurement-{env} |
-| `logistics` | Lager, Versand, Wareneingang | mkg-logistics-{env} |
-| `sales` | Vertrieb, Angebote, Bestellungen | mkg-sales-{env} |
-| `marketing` | Kampagnen, Kanäle | mkg-marketing-{env} |
-| `service` | After-Sales, Garantie, Reparaturen | mkg-service-{env} |
-| `accounting` | Buchhaltung, Rechnungen, Finanzen | mkg-accounting-{env} |
-
-**Cross-Domain-Kommunikation:**
-- Synchron via HTTP (API Gateway)
-- Asynchron via Events (SQS/EventBridge)
-- Je nach Use Case
+Verwaltet die AWS Organizations Struktur:
+- AWS Accounts
+- Organizational Units (OUs)
+- IAM Identity Center (SSO)
+- Permission Sets
+- Service Control Policies (SCPs)
+- GitHub OIDC für CI/CD
 
 ---
 
@@ -95,102 +55,18 @@ Domains entsprechen Unternehmensbereichen (Bounded Contexts). Jede Domain hat ei
 Root
 ├── Management Account (mkg-management)
 ├── Workloads OU
-│   ├── Platform OU (mkg-platform-dev/stage/prod)
-│   ├── Product OU (mkg-product-dev/stage/prod)
-│   ├── Procurement OU (mkg-procurement-dev/stage/prod)
-│   ├── Logistics OU (mkg-logistics-dev/stage/prod)
-│   ├── Sales OU (mkg-sales-dev/stage/prod)
-│   ├── Marketing OU (mkg-marketing-dev/stage/prod)
-│   ├── Service OU (mkg-service-dev/stage/prod)
-│   └── Accounting OU (mkg-accounting-dev/stage/prod)
+│   ├── Backend OU
+│   │   ├── mkg-backend-dev
+│   │   ├── mkg-backend-stage
+│   │   └── mkg-backend-prod
+│   └── Frontend OU
+│       ├── mkg-frontend-dev
+│       ├── mkg-frontend-stage
+│       └── mkg-frontend-prod
 └── Suspended OU
 ```
 
-**Total: 25 AWS-Accounts** (1 Management + 24 Member)
-
----
-
-## Tech-Stack
-
-**Backend:**
-- Python 3.12+
-- FastAPI (lokale Entwicklung)
-- AWS Lambda + API Gateway (Production)
-- Pydantic für Validierung und DTOs
-- ABC für Interfaces
-
-**Frontend:**
-- React
-- Vitest + React Testing Library (Unit/Component)
-- Playwright (E2E)
-
-**Datenbank:**
-- DynamoDB (primär)
-- DocumentDB (bei Bedarf für komplexe Queries)
-
-**Infrastructure:**
-- Terraform
-- AWS Organizations (Management + 24 Member-Accounts)
-- GitHub Actions
-
----
-
-## Code-Konventionen
-
-**Sprache:**
-- Code, Variablen, Kommentare: Englisch
-- Dokumentation: Englisch
-
-**Formatierung:**
-- Ruff (Linting + Formatting)
-- Type Hints sind Pflicht
-- Docstrings: Google-Style, nur bei öffentlichen Methoden
-
-**Namenskonventionen:**
-
-| Element | Konvention | Beispiel |
-|---------|------------|----------|
-| Entity | PascalCase, Singular | `Product`, `Customer` |
-| Service | PascalCase + Service | `ProductService` |
-| Repository | PascalCase + Repository | `ProductRepository` |
-| Port (Interface) | PascalCase + Port | `ProductRepositoryPort` |
-| Adapter | Prefix + Port-Name | `DynamoDBProductRepository` |
-| Lambda Handler | snake_case | `create_product_handler.py` |
-
----
-
-## AWS-Konventionen
-
-**Region:** eu-central-1 (Frankfurt)
-
-**Naming:**
-```
-mkg-{domain}-{resource}-{env}
-```
-
-| Ressource | Beispiel |
-|-----------|----------|
-| Lambda | `mkg-product-create-prod` |
-| DynamoDB Table | `mkg-product-entities-prod` |
-| API Gateway | `mkg-product-api-prod` |
-| S3 Bucket | `mkg-product-media-prod` |
-| SQS Queue | `mkg-procurement-orders-prod` |
-
-**Tags (Pflicht):**
-```
-Project:     mkg-machines
-Domain:      {domain}
-Environment: {env}
-ManagedBy:   terraform
-```
-
-**Accounts & Environments:**
-
-| Environment | Zweck | Zugriff Entwickler |
-|-------------|-------|-------------------|
-| dev | Entwicklung und Test | Full Access |
-| stage | Staging, Pre-Production | Full Access |
-| prod | Production | ReadOnly |
+**Total: 7 AWS-Accounts** (1 Management + 6 Member)
 
 ---
 
@@ -199,125 +75,65 @@ ManagedBy:   terraform
 | Permission Set | Zielgruppe | Dev | Stage | Prod |
 |----------------|------------|-----|-------|------|
 | `AdminAccess` | Plattform-Admins | Full | Full | Full |
-| `PlatformDeveloper` | Platform-Team | Full | Full | ReadOnly |
-| `ProductDeveloper` | Product-Team | Full | Full | ReadOnly |
-| `ProcurementDeveloper` | Procurement-Team | Full | Full | ReadOnly |
-| `LogisticsDeveloper` | Logistics-Team | Full | Full | ReadOnly |
-| `SalesDeveloper` | Sales-Team | Full | Full | ReadOnly |
-| `MarketingDeveloper` | Marketing-Team | Full | Full | ReadOnly |
-| `ServiceDeveloper` | Service-Team | Full | Full | ReadOnly |
-| `AccountingDeveloper` | Accounting-Team | Full | Full | ReadOnly |
+| `BackendDeveloper` | Backend-Entwickler | Full | Full | ReadOnly |
+| `FrontendDeveloper` | Frontend-Entwickler | Full | Full | ReadOnly |
 | `ReadOnly` | Stakeholder, Support | ReadOnly | ReadOnly | ReadOnly |
 | `Deployer` | CI/CD Pipelines | Deploy | Deploy | Deploy |
 
-Ein Entwickler kann mehrere Permission Sets erhalten.
+Ein Entwickler kann mehrere Permission Sets erhalten (z.B. Backend + Frontend).
 
 ---
 
-## Git-Workflow
+## Service Control Policies (SCPs)
 
-**Trunk-based Development:**
-- `main` ist immer deploybar
-- Feature-Branches: `feat/{ticket}-{kurzbeschreibung}`
-- Bugfix-Branches: `fix/{ticket}-{kurzbeschreibung}`
-- Kurzlebig: max. wenige Tage
+| SCP | Zweck |
+|-----|-------|
+| `DenyRootUser` | Verhindert Root-User-Nutzung in Member-Accounts |
+| `DenyLeaveOrganization` | Verhindert, dass Accounts die Organization verlassen |
+| `RegionRestriction` | Beschränkt auf eu-central-1 |
+| `RequireIMDSv2` | Erzwingt IMDSv2 für EC2 |
+| `FullAWSAccess` | AWS-Standard, wird von anderen SCPs eingeschränkt |
 
-**Commit-Messages (Conventional Commits):**
+---
+
+## AWS-Konventionen
+
+**Region:** eu-central-1 (Frankfurt)
+
+**Account-Naming:**
 ```
-feat: add product entity type creation
-fix: resolve validation error for decimal attributes
-refactor: extract attribute validation into separate module
-test: add unit tests for entity repository
-docs: update API documentation
-chore: update dependencies
-```
-
----
-
-## CI/CD (GitHub Actions)
-
-**Push auf Feature-Branch:**
-- Ruff (Linting)
-- pytest (Unit-Tests)
-- Security-Scan (Dependencies)
-
-**Merge in main:**
-- Alle Checks oben
-- Integration-Tests (LocalStack)
-- Build
-- Auto-Deploy → Dev
-
-**Preview-Environments:**
-- Temporäre Umgebung pro Pull Request
-- Automatisch erstellt und gelöscht
-
-**Stage-Deployment:**
-- Manueller Trigger oder Tag
-
-**Prod-Deployment:**
-- Manuelle Freigabe erforderlich
-
----
-
-## Testing
-
-**Backend:**
-- pytest für Unit- und Integration-Tests
-- LocalStack für lokale AWS-Simulation
-- moto für AWS-Mocks in Unit-Tests
-- Coverage-Ziel: 80%+
-
-**Frontend:**
-- Vitest für Unit-Tests
-- React Testing Library für Component-Tests
-- Playwright für E2E-Tests
-
-**Prinzipien:**
-- Tests gehören zu jeder Änderung
-- Unit-Tests: isoliert, schnell, keine externen Abhängigkeiten
-- Integration-Tests: gegen LocalStack oder Mocks
-
----
-
-## Dokumentation
-
-**API:**
-- OpenAPI/Swagger (automatisch generiert via FastAPI)
-
-**Architektur:**
-- Architecture Decision Records (ADRs) in `docs/adr/`
-- Format: `{nummer}-{titel}.md` (z.B. `001-hexagonal-architecture.md`)
-
-**ADR-Template:**
-```markdown
-# {Nummer}. {Titel}
-
-## Status
-Accepted | Proposed | Deprecated
-
-## Kontext
-Warum stehen wir vor dieser Entscheidung?
-
-## Entscheidung
-Was haben wir entschieden?
-
-## Konsequenzen
-Was folgt daraus (positiv und negativ)?
+mkg-{layer}-{env}
 ```
 
----
+| Account | Zweck |
+|---------|-------|
+| `mkg-management` | Organizations, Billing, SSO |
+| `mkg-backend-dev` | Backend Services Development |
+| `mkg-backend-stage` | Backend Services Staging |
+| `mkg-backend-prod` | Backend Services Production |
+| `mkg-frontend-dev` | Frontend Development |
+| `mkg-frontend-stage` | Frontend Staging |
+| `mkg-frontend-prod` | Frontend Production |
 
-## Repositories
+**Ressourcen-Naming:**
+```
+mkg-{service}-{resource}-{env}
+```
 
-| Repository | Inhalt |
-|------------|--------|
-| `mkg-infrastructure-org` | AWS Organizations, Accounts, SSO, SCPs |
-| `mkg-infrastructure-shared` | Shared Resources (Route53, etc.) |
-| `mkg-platform-backend` | Platform Domain Backend |
-| `mkg-platform-frontend` | Platform Domain Frontend |
-| `mkg-product-backend` | Product Domain Backend |
-| `mkg-product-frontend` | Product Domain Frontend |
-| ... | (analog für andere Domains) |
+| Ressource | Beispiel |
+|-----------|----------|
+| Lambda | `mkg-schema-create-prod` |
+| DynamoDB Table | `mkg-data-entities-prod` |
+| API Gateway | `mkg-api-gateway-prod` |
+| S3 Bucket | `mkg-media-files-prod` |
+
+**Tags (Pflicht):**
+```
+Project:     mkg-machines
+Service:     {service-name}
+Environment: {env}
+ManagedBy:   terraform
+```
 
 ---
 
@@ -335,6 +151,124 @@ Was folgt daraus (positiv und negativ)?
 - DynamoDB Table: `mkg-terraform-locks`
 - Region: `eu-central-1`
 
-**GitHub Organization:**
+---
+
+## Terraform-Konventionen
+
+**Struktur:**
+```
+mkg-infrastructure-org/
+├── main.tf
+├── variables.tf
+├── outputs.tf
+├── versions.tf
+├── backend.tf
+├── modules/
+│   ├── accounts/
+│   ├── ous/
+│   ├── permission-sets/
+│   ├── sso/
+│   └── scps/
+├── config/
+│   └── users.json
+└── docs/
+    └── adr/
+```
+
+**State Management:**
+- Remote State in S3 mit DynamoDB Locking
+- State pro Environment ist nicht nötig (Organizations ist global)
+
+**Naming:**
+- Module: snake_case (`permission_sets`)
+- Ressourcen: snake_case mit Prefix (`mkg_backend_dev`)
+- Variablen: snake_case (`account_email`)
+
+---
+
+## Git-Workflow
+
+**Trunk-based Development:**
+- `main` ist immer deploybar
+- Feature-Branches: `feat/{ticket}-{kurzbeschreibung}`
+- Bugfix-Branches: `fix/{ticket}-{kurzbeschreibung}`
+- Kurzlebig: max. wenige Tage
+
+**Commit-Messages (Conventional Commits):**
+```
+feat: add backend developer permission set
+fix: correct region restriction SCP
+refactor: extract account creation into module
+docs: update account structure documentation
+chore: update terraform provider versions
+```
+
+---
+
+## CI/CD (GitHub Actions)
+
+**Push auf Feature-Branch:**
+- `terraform fmt -check`
+- `terraform validate`
+- `terraform plan` (als Kommentar im PR)
+
+**Merge in main:**
+- `terraform plan`
+- Manuelle Freigabe
+- `terraform apply`
+
+**Wichtig:** Alle Änderungen an AWS Organizations erfordern Review und manuelle Freigabe.
+
+---
+
+## Repository-Landschaft (Gesamt)
+
+### Infrastructure (2)
+
+| Repository | Inhalt |
+|------------|--------|
+| `mkg-infrastructure-org` | AWS Organizations, Accounts, SSO, SCPs |
+| `mkg-infrastructure-shared` | Shared Resources (Route53, Certificates, etc.) |
+
+### Backend Services (7)
+
+| Repository | Inhalt |
+|------------|--------|
+| `mkg-service-auth` | Login, JWT, Session (Cognito) |
+| `mkg-service-identity` | User, Usergruppen, Permissions |
+| `mkg-service-schema` | Entity-Schema CRUD |
+| `mkg-service-data` | Entity-Data CRUD |
+| `mkg-service-validation` | Validierungs-Engine |
+| `mkg-service-query` | Suche, Filter, Aggregation |
+| `mkg-service-media` | File Upload, S3 |
+
+### Shared Libraries (4)
+
+| Repository | Inhalt |
+|------------|--------|
+| `mkg-lib-auth` | Auth-Middleware, JWT-Prüfung |
+| `mkg-lib-permissions` | Permission-Checker |
+| `mkg-lib-dynamodb` | DB-Abstraction |
+| `mkg-lib-types` | Shared Types (Python/TypeScript) |
+
+### Frontend (1)
+
+| Repository | Inhalt |
+|------------|--------|
+| `mkg-frontend` | React App (Admin UI) |
+
+### Templates (1)
+
+| Repository | Inhalt |
+|------------|--------|
+| `mkg-template-service` | Vorlage für neue Backend-Services |
+
+**Total: 15 Repositories**
+
+---
+
+## GitHub Organization
+
 - Organization: `mkg-machines`
 - URL: `https://github.com/mkg-machines`
+- Package Registry: GitHub Packages (`@mkg-machines/*`)
