@@ -5,9 +5,9 @@ Terraform configuration for AWS Organizations, SSO, and GitHub OIDC.
 ## Overview
 
 This repository manages:
-- AWS Organizations with 25 accounts (1 Management + 24 Member)
+- AWS Organizations with 7 accounts (1 Management + 6 Member)
 - AWS IAM Identity Center (SSO)
-- Permission Sets for domain-based access control
+- Permission Sets for layer-based access control
 - GitHub OIDC for CI/CD pipelines
 - Service Control Policies (SCPs)
 
@@ -16,26 +16,28 @@ This repository manages:
 ```
 Root
 ├── Management Account (mkg-management)
-├── Domains OU
-│   ├── Platform OU (mkg-platform-dev/stage/prod)
-│   ├── Product OU (mkg-product-dev/stage/prod)
-│   ├── Procurement OU (mkg-procurement-dev/stage/prod)
-│   ├── Logistics OU (mkg-logistics-dev/stage/prod)
-│   ├── Sales OU (mkg-sales-dev/stage/prod)
-│   ├── Marketing OU (mkg-marketing-dev/stage/prod)
-│   ├── Service OU (mkg-service-dev/stage/prod)
-│   └── Accounting OU (mkg-accounting-dev/stage/prod)
+├── Workloads OU
+│   ├── Backend OU
+│   │   ├── mkg-backend-dev
+│   │   ├── mkg-backend-stage
+│   │   └── mkg-backend-prod
+│   └── Frontend OU
+│       ├── mkg-frontend-dev
+│       ├── mkg-frontend-stage
+│       └── mkg-frontend-prod
 └── Suspended OU
 ```
 
 ## Prerequisites
 
-- Terraform >= 1.6.0
+- Terraform >= 1.11.1
 - AWS CLI configured with Management Account credentials
 - AWS Organizations enabled
 - AWS IAM Identity Center enabled
 
 ## Usage
+
+### Local Development
 
 ```bash
 cd environments/management
@@ -43,6 +45,14 @@ terraform init
 terraform plan
 terraform apply
 ```
+
+### CI/CD Workflow
+
+Changes are deployed via GitHub Actions:
+
+1. **Push to main** → `Terraform Plan` runs automatically
+2. **Review plan output** in Actions log
+3. **Trigger apply** → Actions → "Terraform Apply" → Run workflow → type `apply`
 
 ## Configuration
 
@@ -52,12 +62,15 @@ Edit `data/accounts.json` to manage AWS accounts.
 ### Users & Groups
 Edit `data/users.json` to manage SSO users and groups.
 
+Note: Users created via Terraform need manual password reset in IAM Identity Center to receive invitation email.
+
 ## Permission Sets
 
 | Permission Set | Description |
 |----------------|-------------|
 | AdminAccess | Full access to all accounts |
-| {Domain}Developer | Full access to dev/stage, ReadOnly to prod |
+| BackendDeveloper | Full access to backend dev/stage, ReadOnly to prod |
+| FrontendDeveloper | Full access to frontend dev/stage, ReadOnly to prod |
 | ReadOnly | ReadOnly access everywhere |
 | Deployer | CI/CD deployment permissions |
 
