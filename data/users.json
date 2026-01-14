@@ -28,18 +28,37 @@
   ],
   "users": [
     {
-      "user_name": "platform.team-lead",
-      "display_name": "Platform Team Lead",
-      "email": "platform.team-lead@mkg-machines.com",
-      "given_name": "Platform",
-      "family_name": "Team Lead",
+      "user_name": "ural-genc-g52",
+      "display_name": "Ural Genc - G52",
+      "email": "ural.genc@g52-its.com",
+      "given_name": "Ural",
+      "family_name": "Genc",
       "department": "IT",
-      "title": "Platform Team Leader - Administrator",
+      "title": "",
       "manager": "ural.genc@mkg-machines.com",
       "phone": null,
       "locale": "de-DE",
       "timezone": "Europe/Berlin",
-      "groups": ["Admins"],
+      "groups": ["BackendDevelopers"],
+      "tags": {
+        "Project": "mkg-machines",
+        "Role": "Admin",
+        "CostCenter": "IT-520100"
+      }
+    },
+    {
+      "user_name": "ural-genc-prv",
+      "display_name": "Ural Genc - Private",
+      "email": "info@ural-genc.de",
+      "given_name": "Ural",
+      "family_name": "Genc",
+      "department": "IT",
+      "title": "",
+      "manager": "ural.genc@mkg-machines.com",
+      "phone": null,
+      "locale": "de-DE",
+      "timezone": "Europe/Berlin",
+      "groups": ["BackendDevelopers"],
       "tags": {
         "Project": "mkg-machines",
         "Role": "Admin",
@@ -58,7 +77,7 @@
       "phone": null,
       "locale": "de-DE",
       "timezone": "Europe/Berlin",
-      "groups": ["BackendDevelopers"],
+      "groups": ["Admins"],
       "tags": {
         "Project": "mkg-machines",
         "Role": "Backend Developer",
