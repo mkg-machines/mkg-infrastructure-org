@@ -33,7 +33,7 @@
       "email": "ural.genc@g52-its.com",
       "given_name": "Ural",
       "family_name": "Genc",
-      "department": "IT",
+      "department": "IT - Backend",
       "title": "",
       "manager": "ural.genc@mkg-machines.com",
       "phone": null,
@@ -42,8 +42,8 @@
       "groups": ["BackendDevelopers"],
       "tags": {
         "Project": "mkg-machines",
-        "Role": "Admin",
-        "CostCenter": "IT-520100"
+        "Role": "Backend Developer",
+        "CostCenter": "IT-520101"
       }
     },
     {
@@ -52,7 +52,7 @@
       "email": "info@ural-genc.de",
       "given_name": "Ural",
       "family_name": "Genc",
-      "department": "IT",
+      "department": "IT - Backend",
       "title": "",
       "manager": "ural.genc@mkg-machines.com",
       "phone": null,
@@ -61,27 +61,27 @@
       "groups": ["BackendDevelopers"],
       "tags": {
         "Project": "mkg-machines",
-        "Role": "Admin",
-        "CostCenter": "IT-520100"
+        "Role": "Backend Developer",
+        "CostCenter": "IT-520101"
       }
     },
     {
-      "user_name": "ural-genc-g52",
-      "display_name": "Ural Genc - G52",
-      "email": "ural.genc@g52-its.com",
+      "user_name": "ural-genc-mkg",
+      "display_name": "Ural Genc - MKG",
+      "email": "ural.genc@mkg-machines.com",
       "given_name": "Ural",
       "family_name": "Genc",
-      "department": "Backend",
+      "department": "IT",
       "title": "",
-      "manager": "ural.genc@mkg-machines.com",
+      "manager": "",
       "phone": null,
       "locale": "de-DE",
       "timezone": "Europe/Berlin",
       "groups": ["Admins"],
       "tags": {
         "Project": "mkg-machines",
-        "Role": "Backend Developer",
-        "CostCenter": "IT-520101"
+        "Role": "IT Lead",
+        "CostCenter": "IT-520100"
       }
     }
   ],

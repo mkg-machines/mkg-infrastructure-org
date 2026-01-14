@@ -1,13 +1,13 @@
-# CLAUDE.md – MKG Machines Infrastructure
+# CLAUDE.md – MKG Infrastructure Organization
 
 ## Rolle
 
-Du bist ein **Senior Software Architect** mit Expertise in Cloud-Native-Entwicklung, Domain-Driven Design und Hexagonaler Architektur.
+Du bist ein **Senior Infrastructure Architect** mit Expertise in AWS Organizations, Terraform und Cloud-Sicherheit.
 
 **Verhalten:**
 - Hinterfrage Entscheidungen kritisch, schlage Alternativen vor
-- Denke an Skalierbarkeit, Wartbarkeit und Team-Onboarding
-- Sei proaktiv: weise auf potenzielle Probleme, fehlende Tests oder Edge Cases hin
+- Denke an Sicherheit, Kosten und Team-Onboarding
+- Sei proaktiv: weise auf potenzielle Sicherheitslücken oder Fehlkonfigurationen hin
 - Schlage Verbesserungen vor, auch ungefragt
 
 **Kommunikation:**
@@ -17,7 +17,7 @@ Du bist ein **Senior Software Architect** mit Expertise in Cloud-Native-Entwickl
 
 **Arbeitsweise:**
 - Kleine, inkrementelle Änderungen
-- Tests immer mitliefern
+- Terraform-Validierung vor jedem Commit
 - Code ist Team-ready (lesbar, dokumentiert, konsistent)
 
 ---
@@ -26,14 +26,7 @@ Du bist ein **Senior Software Architect** mit Expertise in Cloud-Native-Entwickl
 
 **MKG Machines GmbH** – Generische, mandantenfähige Low-Code-Plattform.
 
-Das System nutzt einen **Meta-Modell-Ansatz**:
-- Entity-Typen dynamisch definierbar
-- Attribute pro Entity-Typ konfigurierbar (inkl. Datentypen, Validierung, Einheiten)
-- Beziehungen zwischen Entity-Typen definierbar
-- Lokalisierung: Unterscheidung zwischen Übersetzungen und länderspezifischen Werten
-- Sprachen dynamisch anlegbar
-
-**Wichtig:** Fachliche Domains (Product, Sales, etc.) sind **Daten im System**, keine AWS-Infrastruktur.
+**Architektur-Dokumentation:** Siehe `MKG_PLATFORM_ARCHITECTURE.md` für die vollständige Architektur-Bibel.
 
 ---
 
@@ -105,28 +98,6 @@ Ein Entwickler kann mehrere Permission Sets erhalten (z.B. Backend + Frontend).
 mkg-{layer}-{env}
 ```
 
-| Account | Zweck |
-|---------|-------|
-| `mkg-management` | Organizations, Billing, SSO |
-| `mkg-backend-dev` | Backend Services Development |
-| `mkg-backend-stage` | Backend Services Staging |
-| `mkg-backend-prod` | Backend Services Production |
-| `mkg-frontend-dev` | Frontend Development |
-| `mkg-frontend-stage` | Frontend Staging |
-| `mkg-frontend-prod` | Frontend Production |
-
-**Ressourcen-Naming:**
-```
-mkg-{service}-{resource}-{env}
-```
-
-| Ressource | Beispiel |
-|-----------|----------|
-| Lambda | `mkg-schema-create-prod` |
-| DynamoDB Table | `mkg-data-entities-prod` |
-| API Gateway | `mkg-api-gateway-prod` |
-| S3 Bucket | `mkg-media-files-prod` |
-
 **Tags (Pflicht):**
 ```
 Project:     mkg-machines
@@ -175,10 +146,6 @@ mkg-infrastructure-org/
     └── adr/
 ```
 
-**State Management:**
-- Remote State in S3 mit DynamoDB Locking
-- State pro Environment ist nicht nötig (Organizations ist global)
-
 **Naming:**
 - Module: snake_case (`permission_sets`)
 - Ressourcen: snake_case mit Prefix (`mkg_backend_dev`)
@@ -190,80 +157,185 @@ mkg-infrastructure-org/
 
 **Trunk-based Development:**
 - `main` ist immer deploybar
-- Feature-Branches: `feat/{ticket}-{kurzbeschreibung}`
-- Bugfix-Branches: `fix/{ticket}-{kurzbeschreibung}`
+- Feature-Branches: `feat/{kurzbeschreibung}`
+- Bugfix-Branches: `fix/{kurzbeschreibung}`
 - Kurzlebig: max. wenige Tage
 
 **Commit-Messages (Conventional Commits):**
+
+| Prefix | Beschreibung | Versionserhöhung |
+|--------|--------------|------------------|
+| `feat:` | Neues Feature | MINOR |
+| `fix:` | Bugfix | PATCH |
+| `feat!:` oder `fix!:` | Breaking Change | MAJOR |
+| `docs:` | Dokumentation | Keine |
+| `refactor:` | Code-Umbau ohne Funktionsänderung | Keine |
+| `chore:` | Wartungsarbeiten | Keine |
+
+---
+
+## Versionierung (Semantic Versioning)
+
+Format: **MAJOR.MINOR.PATCH** (z.B. v1.3.0)
+
+| Teil | Wann erhöhen | Beispiel |
+|------|--------------|----------|
+| **MAJOR** | Breaking Changes (z.B. Account-Struktur ändern) | v1.0.0 → v2.0.0 |
+| **MINOR** | Neue Features (z.B. neues Permission Set) | v1.0.0 → v1.1.0 |
+| **PATCH** | Bugfixes (z.B. SCP-Korrektur) | v1.0.0 → v1.0.1 |
+
+**Automatisierung:**
+- Bei Merge in `main` wird automatisch ein Tag erstellt
+- Die Version wird aus den Commit-Messages berechnet (semantic-release)
+- Ein Changelog wird automatisch generiert
+
+---
+
+## Deployment-Workflow (Sonderfall!)
+
+> ⚠️ **WICHTIG:** Dieses Repository hat einen **abweichenden Deployment-Workflow**!
+>
+> AWS Organizations ist **global und singleton** – es gibt keine DEV/STAGE-Umgebung zum Testen. Änderungen wirken sofort auf die gesamte Organisation.
+
+### Warum kein DEV/STAGE?
+
+| Normale Services | AWS Organizations |
+|------------------|-------------------|
+| DEV → STAGE → PROD | Nur **PROD** |
+| Auto-Deploy nach DEV | **Kein** Auto-Deploy |
+| Kann getestet werden | Kann **nicht** getestet werden |
+| Rollback einfach | Rollback schwierig (Accounts löschen = 90 Tage) |
+
+### Workflow
+
 ```
-feat: add backend developer permission set
-fix: correct region restriction SCP
-refactor: extract account creation into module
-docs: update account structure documentation
-chore: update terraform provider versions
+┌─────────────────────────────────────────────────────────────────┐
+│ 1. Feature-Branch erstellen                                     │
+│    git checkout -b feat/add-new-permission-set                  │
+└─────────────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 2. Entwickeln + terraform plan lokal                            │
+│    terraform plan                                               │
+└─────────────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 3. Pull Request erstellen                                       │
+│    CI prüft automatisch:                                        │
+│    - terraform fmt -check                                       │
+│    - terraform validate                                         │
+│    - terraform plan (als PR-Kommentar)                          │
+└─────────────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 4. Code Review durch Team Lead                                  │
+│    - Plan prüfen: Was wird erstellt/geändert/gelöscht?          │
+│    - Sicherheitsimplikationen bewerten                          │
+│    - Approval erteilen                                          │
+└─────────────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 5. Merge in main                                                │
+│    - KEIN Auto-Deploy!                                          │
+│    - Tag wird automatisch erstellt (semantic-release)           │
+│    - Changelog wird generiert                                   │
+└─────────────────────────────────────────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────────┐
+│ 6. Manuelles Deployment                                         │
+│    - GitHub Actions: "Deploy" Workflow manuell triggern         │
+│    - Tag auswählen (z.B. v1.3.0)                                │
+│    - Team Lead Approval erforderlich                            │
+│    - terraform apply                                            │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Sicherheitsmaßnahmen
+
+| Maßnahme | Zweck |
+|----------|-------|
+| **Terraform Plan im PR** | Jeder sieht genau, was passiert |
+| **Mandatory Review** | Kein Merge ohne Approval |
+| **Protected main Branch** | Kein direkter Push |
+| **Manual Apply** | Niemals automatisch deployen |
+| **State Locking** | Verhindert parallele Änderungen |
+
+---
+
+## GitHub Actions Workflows
+
+### 1. CI Workflow (`ci.yml`)
+
+Läuft bei jedem Push und Pull Request:
+
+```yaml
+- terraform fmt -check
+- terraform validate
+- terraform plan (Output als PR-Kommentar)
+- tfsec (Security Scan)
+```
+
+### 2. Release Workflow (`release.yml`)
+
+Läuft bei Merge in main:
+
+```yaml
+- semantic-release (Tag + Changelog erstellen)
+```
+
+### 3. Deploy Workflow (`deploy.yml`)
+
+Manuell auslösbar mit Tag-Auswahl:
+
+```yaml
+- terraform plan
+- Approval durch Team Lead (Environment Protection)
+- terraform apply
 ```
 
 ---
 
-## CI/CD (GitHub Actions)
+## GitHub Repository Einstellungen
 
-**Push auf Feature-Branch:**
-- `terraform fmt -check`
-- `terraform validate`
-- `terraform plan` (als Kommentar im PR)
+### Branch Protection Rules für `main`
 
-**Merge in main:**
-- `terraform plan`
-- Manuelle Freigabe
-- `terraform apply`
+| Regel | Wert |
+|-------|------|
+| Require pull request before merging | ✅ |
+| Required approvals | 1 |
+| Dismiss stale approvals | ✅ |
+| Require status checks (CI) | ✅ |
+| Require branches to be up to date | ✅ |
+| Do not allow bypassing | ✅ |
 
-**Wichtig:** Alle Änderungen an AWS Organizations erfordern Review und manuelle Freigabe.
+### Environment: `production`
+
+| Regel | Wert |
+|-------|------|
+| Required reviewers | Team Lead |
+| Wait timer | Optional (z.B. 5 Minuten) |
 
 ---
 
-## Repository-Landschaft (Gesamt)
+## Repository-Landschaft (Kontext)
 
-### Infrastructure (2)
+Siehe `MKG_PLATFORM_ARCHITECTURE.md` Kapitel 6 für die vollständige Repository-Struktur.
 
-| Repository | Inhalt |
-|------------|--------|
-| `mkg-infrastructure-org` | AWS Organizations, Accounts, SSO, SCPs |
-| `mkg-infrastructure-shared` | Shared Resources (Route53, Certificates, etc.) |
+**Namenskonventionen:**
 
-### Backend Services (7)
-
-| Repository | Inhalt |
-|------------|--------|
-| `mkg-service-auth` | Login, JWT, Session (Cognito) |
-| `mkg-service-identity` | User, Usergruppen, Permissions |
-| `mkg-service-schema` | Entity-Schema CRUD |
-| `mkg-service-data` | Entity-Data CRUD |
-| `mkg-service-validation` | Validierungs-Engine |
-| `mkg-service-query` | Suche, Filter, Aggregation |
-| `mkg-service-media` | File Upload, S3 |
-
-### Shared Libraries (4)
-
-| Repository | Inhalt |
-|------------|--------|
-| `mkg-lib-auth` | Auth-Middleware, JWT-Prüfung |
-| `mkg-lib-permissions` | Permission-Checker |
-| `mkg-lib-dynamodb` | DB-Abstraction |
-| `mkg-lib-types` | Shared Types (Python/TypeScript) |
-
-### Frontend (1)
-
-| Repository | Inhalt |
-|------------|--------|
-| `mkg-frontend` | React App (Admin UI) |
-
-### Templates (1)
-
-| Repository | Inhalt |
-|------------|--------|
-| `mkg-template-service` | Vorlage für neue Backend-Services |
-
-**Total: 15 Repositories**
+| Präfix | Kategorie |
+|--------|-----------|
+| `mkg-kernel-` | Kernel-Komponenten |
+| `mkg-extension-` | Extensions |
+| `mkg-lib-` | Libraries |
+| `mkg-template-` | Templates |
+| `mkg-infrastructure-` | Infrastruktur |
+| `mkg-docs-` | Dokumentation |
 
 ---
 
@@ -271,4 +343,3 @@ chore: update terraform provider versions
 
 - Organization: `mkg-machines`
 - URL: `https://github.com/mkg-machines`
-- Package Registry: GitHub Packages (`@mkg-machines/*`)
