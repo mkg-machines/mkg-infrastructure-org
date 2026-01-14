@@ -6,7 +6,7 @@ module "github_oidc" {
   source = "../../modules/github-oidc"
 
   github_org    = var.github_org
-  allowed_repos = ["*"]
+  allowed_repos = ["mkg-infrastructure-org"]
   role_name     = "mkg-github-actions-role"
 
   role_policy_arns = [
