@@ -28,31 +28,12 @@
   ],
   "users": [
     {
-      "user_name": "platform.team-lead",
-      "display_name": "Platform Team Lead",
-      "email": "platform.team-lead@mkg-machines.com",
-      "given_name": "Platform",
-      "family_name": "Team Lead",
-      "department": "IT",
-      "title": "Platform Team Leader - Administrator",
-      "manager": "ural.genc@mkg-machines.com",
-      "phone": null,
-      "locale": "de-DE",
-      "timezone": "Europe/Berlin",
-      "groups": ["Admins"],
-      "tags": {
-        "Project": "mkg-machines",
-        "Role": "Admin",
-        "CostCenter": "IT-520100"
-      }
-    },
-    {
       "user_name": "ural-genc-g52",
       "display_name": "Ural Genc - G52",
       "email": "ural.genc@g52-its.com",
       "given_name": "Ural",
       "family_name": "Genc",
-      "department": "Backend",
+      "department": "IT - Backend",
       "title": "",
       "manager": "ural.genc@mkg-machines.com",
       "phone": null,
@@ -63,6 +44,44 @@
         "Project": "mkg-machines",
         "Role": "Backend Developer",
         "CostCenter": "IT-520101"
+      }
+    },
+    {
+      "user_name": "ural-genc-prv",
+      "display_name": "Ural Genc - Private",
+      "email": "info@ural-genc.de",
+      "given_name": "Ural",
+      "family_name": "Genc",
+      "department": "IT - Backend",
+      "title": "",
+      "manager": "ural.genc@mkg-machines.com",
+      "phone": null,
+      "locale": "de-DE",
+      "timezone": "Europe/Berlin",
+      "groups": ["BackendDevelopers"],
+      "tags": {
+        "Project": "mkg-machines",
+        "Role": "Backend Developer",
+        "CostCenter": "IT-520101"
+      }
+    },
+    {
+      "user_name": "ural-genc-mkg",
+      "display_name": "Ural Genc - MKG",
+      "email": "ural.genc@mkg-machines.com",
+      "given_name": "Ural",
+      "family_name": "Genc",
+      "department": "IT",
+      "title": "",
+      "manager": "",
+      "phone": null,
+      "locale": "de-DE",
+      "timezone": "Europe/Berlin",
+      "groups": ["Admins"],
+      "tags": {
+        "Project": "mkg-machines",
+        "Role": "IT Lead",
+        "CostCenter": "IT-520100"
       }
     }
   ],
