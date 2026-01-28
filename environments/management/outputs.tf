@@ -73,3 +73,27 @@ output "github_oidc_role_arn" {
   description = "GitHub OIDC role ARN"
   value       = module.github_oidc.role_arn
 }
+
+# -----------------------------------------------------------------------------
+# Terraform State Outputs (for all repositories)
+# -----------------------------------------------------------------------------
+
+output "terraform_state_bucket_name" {
+  description = "Name of the central Terraform state bucket"
+  value       = aws_s3_bucket.terraform_state.id
+}
+
+output "terraform_state_bucket_arn" {
+  description = "ARN of the central Terraform state bucket"
+  value       = aws_s3_bucket.terraform_state.arn
+}
+
+output "terraform_locks_table_name" {
+  description = "Name of the Terraform state lock table"
+  value       = aws_dynamodb_table.terraform_locks.name
+}
+
+output "terraform_locks_table_arn" {
+  description = "ARN of the Terraform state lock table"
+  value       = aws_dynamodb_table.terraform_locks.arn
+}

@@ -124,6 +124,42 @@ ManagedBy:   terraform
 
 ---
 
+## Terraform State Convention
+
+### Zentraler State
+
+Alle MKG Platform Repositories verwenden den **zentralen Terraform State Bucket** im Management Account:
+
+| Ressource | Wert |
+|-----------|------|
+| S3 Bucket | `mkg-terraform-state-590042305656` |
+| DynamoDB Table | `mkg-terraform-locks` |
+| Region | `eu-central-1` |
+
+### State Key Pattern
+
+```
+{repository-name}/{environment}/terraform.tfstate
+```
+
+### Beispiele
+
+| Repository | Environment | State Key |
+|------------|-------------|-----------|
+| mkg-infrastructure-org | management | `mkg-infrastructure-org/management/terraform.tfstate` |
+| mkg-infrastructure-shared | dev | `mkg-infrastructure-shared/dev/terraform.tfstate` |
+| mkg-kernel | prod | `mkg-kernel/prod/terraform.tfstate` |
+| mkg-extension-search | stage | `mkg-extension-search/stage/terraform.tfstate` |
+| mkg-app-admin | dev | `mkg-app-admin/dev/terraform.tfstate` |
+
+### Cross-Account Zugriff
+
+Member Accounts greifen uber Organization Condition zu:
+- `aws:PrincipalOrgID` = Organization ID
+- `aws:PrincipalArn` = `arn:aws:iam::*:role/mkg-*-github-actions-role`
+
+---
+
 ## Terraform-Konventionen
 
 **Struktur:**
